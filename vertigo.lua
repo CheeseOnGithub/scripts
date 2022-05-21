@@ -1,12 +1,10 @@
 local lib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
-local RunService = game:GetService("RunService")
 local character = game:GetService("Players").LocalPlayer.Character
 local window = lib:MakeWindow({Name = "goofy ahh script", HidePremium = false, SaveConfig = true, ConfigFolder = "vertigo private script lol"})
-local mainTab = window:MakeTab({Name="main", Icon = "rbxassetid://4483345998", PremiumOnly = false})
-local weaponsTab = window:MakeTab({Name="weapons", Icon = "rbxassetid://4483345998", PremiumOnly = false})
+local mainTab = window:MakeTab({Name="main", Icon = "rbxassetid://4370317950", PremiumOnly = false})
+local weaponsTab = window:MakeTab({Name="weapons", Icon = "rbxassetid://4370346121", PremiumOnly = false})
 local antiFallEnabled = false
 local ADEnabled
-local HBEVal = 1
 
 
 mainTab:AddToggle({
@@ -98,7 +96,7 @@ end)
 -- main loop or some shti
 while wait() do
     -- inf armour durability
-    if ADEnabled and character:FindFirstChild("ARMOR_Torso") ~= nil then
+    if ADEnabled and character:WaitForChild("ARMOR_Torso") ~= nil then
         character["ARMOR_Torso"].ArmorBlockScript.Durability.Value = 130
     end
 end
