@@ -3,6 +3,7 @@ local RunService = game:GetService("RunService")
 local character = game:GetService("Players").LocalPlayer.Character
 local window = lib:MakeWindow({Name = "goofy ahh script", HidePremium = false, SaveConfig = true, ConfigFolder = "vertigo private script lol"})
 local mainTab = window:MakeTab({Name="main", Icon = "rbxassetid://4483345998", PremiumOnly = false})
+local weaponsTab = window:MakeTab({Name="weapons", Icon = "rbxassetid://4483345998", PremiumOnly = false})
 local antiFallEnabled = false
 local ADEnabled
 local HBEVal = 1
@@ -39,7 +40,7 @@ mainTab:AddButton({
     end
 })
 
-mainTab:AddButton({
+weaponsTab:AddButton({
     Name = "get eyelander",
     Callback = function()
         local oldPos = game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart.Position
@@ -59,6 +60,27 @@ mainTab:AddButton({
     end
 })
 
+weaponsTab:AddButton({
+    Name = "get katana",
+    Callback = function()
+        local oldPos = game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart.Position
+        if game:GetService("Workspace").KatanaStand.FakeWeapon.Transparency == 0 then
+            antiFallEnabled = true
+            tweenService, tweenInfo = game:GetService("TweenService"), TweenInfo.new(0.5, Enum.EasingStyle.Linear)
+            tweenService:Create(game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart, tweenInfo, {CFrame = CFrame.new(146.04632568359375, 98.87576293945312, -104.07154846191406)}):Play()
+            antiFallEnabled = false
+        else
+            lib:MakeNotification({
+                Name = "weapon hasnt spawned in yet",
+                Content = "wait a sec lol",
+                Image = "rbxassetid://4483345998",
+                Time = 5
+            })
+        end
+    end
+})
+
+
 local oldnamecall = nil
 oldnamecall = hookmetamethod(game, "__namecall", function(self, ...)
     local args = {...}
@@ -76,7 +98,7 @@ end)
 -- main loop or some shti
 while wait() do
     -- inf armour durability
-    if ADEnabled then
+    if ADEnabled and character:FindFirstChild("ARMOR_Torso") ~= nil then
         character["ARMOR_Torso"].ArmorBlockScript.Durability.Value = 130
     end
 end
