@@ -115,22 +115,6 @@ oldNamecall = hookmetamethod(game, "__namecall", function(...)
     return oldNamecall(...)
 end)
 
-local oldNameCall
-oldNameCall = hookmetamethod(game, "__namecall", function(self, ...)
-    local args = {...}
-    local method = getnamecallmethod()
-
-    if method == "FireServer" and self == game.ReplicatedStorage.Assets.Remotes.throwGrenade then
-        local hit = GetClosestPlayer()
-        args[1] = hit.Position
-        print(hit)
-
-        return unpack(args)
-    end
-
-    return oldNameCall(self, ...)
-end)
-
 game:GetService("RunService").RenderStepped:Connect(function()
     fovcircle.Position = GetMousePosition() + Vector2.new(0, 38)
 
@@ -273,7 +257,11 @@ playerMain:Slider({Name="jumppower", Minimum = 50, Maximum = 500, Default=50, Ca
     jumppowerValue = v
 end})
 
-
+for i,v in getgc(true) do
+    if typeof(v) == "table" then
+        rconsoleprint(v)
+    end
+end
 
 
 
