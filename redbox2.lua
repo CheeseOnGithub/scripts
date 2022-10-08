@@ -19,7 +19,7 @@ local window = Library:CreateWindow({
 local function getClosest()
     local hrp = players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position
     local closest_distance = math.huge
-    local closestnigger
+    local closestperson
 
     for i,v in pairs(game.Players:GetPlayers()) do
         if v.Character ~= nil and v ~= players.LocalPlayer and v.Character:FindFirstChild("HumanoidRootPart") ~= nil and v.Character:FindFirstChild("Humanoid").Health > 0 then
@@ -28,12 +28,12 @@ local function getClosest()
     
             if plr_distance < closest_distance then
                 closest_distance = plr_distance
-                closestnigger = v
+                closestperson = v
             end
         end
     end
 
-    return closestnigger
+    return closestperson
 end
 
 
