@@ -38,7 +38,7 @@ local function getClosestObject(folder)
     local distance, part = math.huge, nil
     local mainPart
     for i,v in pairs(folder:GetChildren()) do
-        local HRPPosition = Players.LocalPlayer.Character.HumanoidRootPart.Position
+        local HRPPosition = Character:WaitForChild("HumanoidRootPart").Position
 
         for i2,v2 in pairs(v:GetChildren()) do
             if v2:IsA("BasePart") then
@@ -63,7 +63,7 @@ local function getClosestPickups(folder)
     local pickups = {}
     for i,v in pairs(folder:GetChildren()) do
         if v:FindFirstChild("Pickup") and v:IsA("BasePart") and table.find(pickups,v) == nil then
-            if (Players.LocalPlayer.Character.HumanoidRootPart.Position - v.Position).Magnitude <= 30 then
+            if (Character:WaitForChild("HumanoidRootPart").Position - v.Position).Magnitude <= 30 then
                 table.insert(pickups, v)
             end
         end
@@ -72,7 +72,7 @@ local function getClosestPickups(folder)
 end
 
 while wait(0.1) do
-    local suc, err = pcall(function()
+    pcall(function()
         if killauraToggle.on then
             local closest = getClosest()
             local hrp = Character:WaitForChild("HumanoidRootPart").Position
@@ -108,8 +108,4 @@ while wait(0.1) do
             end
         end
     end)
-
-    if err then
-        print(err)
-    end
 end
