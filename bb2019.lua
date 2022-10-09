@@ -11,7 +11,6 @@ local autohealSlider = combatTab.new("Slider", {text="auto heal health", min=1, 
 local breakauraToggle = mainTab.new("Switch", {text="mine aura"})
 local pickupToggle = mainTab.new("Switch", {text="auto pickup"})
 local mouse = Players.LocalPlayer:GetMouse()
-local Character = Players.LocalPlayer.Character or Players.LocalPlayer.CharacterAdded:Wait()
 
 -- took this from devforums
 local function getClosest()
@@ -37,22 +36,25 @@ end
 local function getClosestObject(folder)
     local distance, part = math.huge, nil
     local mainPart
+    local Character = Players.LocalPlayer.Character
     for i,v in pairs(folder:GetChildren()) do
-        local HRPPosition = Character:WaitForChild("HumanoidRootPart").Position
+        if Character:FindFirstChild("HumanoidRootPart") then
+            local HRPPosition = Character:FindFirstChild("HumanoidRootPart").Position
 
-        for i2,v2 in pairs(v:GetChildren()) do
-            if v2:IsA("BasePart") then
-                mainPart = v2
-                break
+            for i2,v2 in pairs(v:GetChildren()) do
+                if v2:IsA("BasePart") then
+                    mainPart = v2
+                    break
+                end
             end
-        end
-
-        if mainPart and not mainPart.Parent:FindFirstChild("Humanoid") and mainPart.Parent:FindFirstChild("Health") then
-            local realDistance = math.abs((HRPPosition - mainPart.Position).Magnitude)
-
-            if realDistance < distance then
-                distance = realDistance
-                part = mainPart
+    
+            if mainPart and not mainPart.Parent:FindFirstChild("Humanoid") and mainPart.Parent:FindFirstChild("Health") then
+                local realDistance = math.abs((HRPPosition - mainPart.Position).Magnitude)
+    
+                if realDistance < distance then
+                    distance = realDistance
+                    part = mainPart
+                end
             end
         end
     end
@@ -60,10 +62,11 @@ local function getClosestObject(folder)
 end
 
 local function getClosestPickups(folder)
+    local Character = Players.LocalPlayer.Character
     local pickups = {}
     for i,v in pairs(folder:GetChildren()) do
-        if v:FindFirstChild("Pickup") and v:IsA("BasePart") and table.find(pickups,v) == nil then
-            if (Character:WaitForChild("HumanoidRootPart").Position - v.Position).Magnitude <= 30 then
+        if v:FindFirstChild("Pickup") and v:IsA("BasePart") and table.find(pickups,v) == nil and Character:FindFirstChild("HumanoidRootPart") then
+            if (Character.HumanoidRootPart.Position - v.Position).Magnitude <= 30 then
                 table.insert(pickups, v)
             end
         end
@@ -72,28 +75,29 @@ local function getClosestPickups(folder)
 end
 
 while wait(0.1) do
-    pcall(function()
-        if killauraToggle.on then
-            local closest = getClosest()
-            local hrp = Character:WaitForChild("HumanoidRootPart").Position
-    
-            -- guessing the distance tbh
-            if (hrp - closest.Character.HumanoidRootPart.Position).Magnitude <= 10 then
-                ReplicatedStorage.Events.SwingTool:FireServer(ReplicatedStorage.RelativeTime.Value, {
-                    [1] = closest.Character.HumanoidRootPart
-                })
-            end
-        end
+    local Character = Players.LocalPlayer.Character
+    if killauraToggle.on then
+        local closest = getClosest()
+        local hrp = Character:FindFirstChild("HumanoidRootPart").Position
 
-        if autohealToggle.on then
-            if Character:WaitForChild("Humanoid").Health <= autohealSlider.value then
-                game:GetService("ReplicatedStorage").Events.UseBagltem:FireServer("Bloodfruit")
-            end
+        -- guessing the distance tbh
+        if (hrp - closest.Character.HumanoidRootPart.Position).Magnitude <= 10 then
+            ReplicatedStorage.Events.SwingTool:FireServer(ReplicatedStorage.RelativeTime.Value, {
+                [1] = closest.Character.HumanoidRootPart
+            })
         end
+    end
 
-        if breakauraToggle.on then
+    if autohealToggle.on then
+        if Character:FindFirstChild("Humanoid").Health <= autohealSlider.value then
+            game:GetService("ReplicatedStorage").Events.UseBagltem:FireServer("Bloodfruit")
+        end
+    end
+
+    if breakauraToggle.on then
+        if Character:FindFirstChild("HumanoidRootPart") then
             local closestPart = getClosestObject(workspace)
-            local hrp = Character:WaitForChild("HumanoidRootPart").Position
+            local hrp = Character:FindFirstChild("HumanoidRootPart").Position
             
             if (hrp - closestPart.Position).Magnitude <= 40 then
                 ReplicatedStorage.Events.SwingTool:FireServer(ReplicatedStorage.RelativeTime.Value, {
@@ -101,11 +105,11 @@ while wait(0.1) do
                 })
             end
         end
+    end
 
-        if pickupToggle.on then
-            for i,v in pairs(getClosestPickups(workspace)) do
-                game:GetService("ReplicatedStorage").Events.Pickup:FireServer(v)
-            end
+    if pickupToggle.on then
+        for i,v in pairs(getClosestPickups(workspace)) do
+            game:GetService("ReplicatedStorage").Events.Pickup:FireServer(v)
         end
-    end)
+    end
 end
