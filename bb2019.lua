@@ -1,5 +1,6 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TweenService = game:GetService("TweenService")
 local ui = loadstring(game:HttpGet("https://raw.githubusercontent.com/Singularity5490/rbimgui-2/main/rbimgui-2.lua"))()
 local window = ui.new({text="booga booga :flushed:"})
 local mainTab = window.new({text="main"})
@@ -10,6 +11,7 @@ local autohealToggle = combatTab.new("Switch", {text="auto heal"})
 local autohealSlider = combatTab.new("Slider", {text="auto heal health", min=1, max=99, value=30})
 local breakauraToggle = mainTab.new("Switch", {text="mine aura"})
 local pickupToggle = mainTab.new("Switch", {text="auto pickup"})
+local autofarmToggle = autofarmTab.new("Switch", {text="everything autofarm"})
 local mouse = Players.LocalPlayer:GetMouse()
 
 -- took this from devforums
@@ -110,6 +112,23 @@ while wait(0.1) do
     if pickupToggle.on then
         for i,v in pairs(getClosestPickups(workspace)) do
             game:GetService("ReplicatedStorage").Events.Pickup:FireServer(v)
+        end
+    end
+    if autofarmToggle.on then
+        local part = getClosestObject(workspace)
+        local HRPPosition = Players.LocalPlayer.Character.HumanoidRootPart.Position
+        local realDistance = math.round(math.abs((HRPPosition - part.Position).Magnitude))
+    
+        ReplicatedStorage.Events.SwingTool:FireServer(ReplicatedStorage.RelativeTime.Value, {
+            [1] = part
+        })
+        for i,v in pairs(getClosestPickups(workspace)) do
+            game:GetService("ReplicatedStorage").Events.Pickup:FireServer(v)
+        end
+        wait(0.1)
+        if part.Position.Y <= 30 then
+            TweenService:Create(Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(realDistance/10, Enum.EasingStyle.Linear), {CFrame=part.CFrame+Vector3.new(0,part.Size.Y,0)}):Play()
+            task.wait(realDistance/10)
         end
     end
 end
