@@ -18,7 +18,6 @@ local flyToggle = mainTab.new("Switch", {text="fly"})
 local autoPlant = autofarmTab.new("Switch", {text="auto plant fruit"})
 local autoharvest = autofarmTab.new("Switch", {text="auto harvest fruit"})
 local chosenFruit = "Bloodfruit"
-local autoRejoin = mainTab.new("Switch", {text="auto rejoin on danger"})
 local fruits = {
     "Bloodfruit",
     "Sunfruit",
