@@ -1,4 +1,4 @@
-local ScreenGui = Instance.new("ScreenGui", game:GetService("CoreGUI"))
+local ScreenGui = Instance.new("ScreenGui", game:GetService("CoreGui"))
 local MainFrame = Instance.new("Frame")
 local TextLabel = Instance.new("TextLabel")
 local UICorner = Instance.new("UICorner")
