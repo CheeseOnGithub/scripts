@@ -50,6 +50,7 @@ function main:new(text)
 	textlabel.TextScaled = true
 	textlabel.TextColor3 = Color3.new(255,255,255)
 	textlabel.BackgroundTransparency = 1
+	textlabel.Text = text
 end
 
 function main:remove(index)
